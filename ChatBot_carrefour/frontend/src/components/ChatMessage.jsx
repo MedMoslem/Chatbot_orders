@@ -18,11 +18,21 @@ const ChatMessage = ({ message }) => {
 
                 <div
                     className={`p-3 rounded-2xl text-sm leading-relaxed shadow-sm ${isUser
-                            ? 'bg-primary text-white rounded-br-none'
-                            : 'bg-white text-gray-800 rounded-bl-none border border-gray-100'
+                        ? 'bg-primary text-white rounded-br-none'
+                        : 'bg-white text-gray-800 rounded-bl-none border border-gray-100'
                         }`}
                 >
-                    {message.text}
+                    {message.image && (
+                        <div className="mb-2 rounded-lg overflow-hidden">
+                            <img
+                                src={message.image}
+                                alt="Product"
+                                className="w-full h-auto max-w-[200px] object-cover"
+                                onError={(e) => e.target.style.display = 'none'}
+                            />
+                        </div>
+                    )}
+                    <div className="whitespace-pre-wrap">{message.text}</div>
                 </div>
             </div>
         </motion.div>

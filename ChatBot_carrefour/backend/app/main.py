@@ -88,8 +88,32 @@ def smartchat(request: ChatRequest):
 
     ai_reply = ask_ai(q, full_context)
     update_memory("user", q)
+    
+    # Try to parse JSON from AI response
+    import json
+    try:
+        # Find JSON content if it's wrapped in text
+        import re
+        json_match = re.search(r'\{.*\}', ai_reply, re.DOTALL)
+        if json_match:
+            json_str = json_match.group(0)
+            parsed_reply = json.loads(json_str)
+            
+            # If valid JSON with order, use it
+            if "order" in parsed_reply and parsed_reply["order"]:
+                update_memory("assistant", parsed_reply["answer"])
+                return {
+                    "answer": parsed_reply["answer"],
+                    "source": "ai",
+                    "order": True,
+                    "items": parsed_reply["order"]["items"],
+                    "total": parsed_reply["order"]["total"]
+                }
+    except Exception as e:
+        print(f"Error parsing AI JSON: {e}")
+        # Fallback to treating it as plain text if parsing fails
+    
     update_memory("assistant", ai_reply)
-
     return {"answer": ai_reply, "source": "ai"}
 class OrderRequest(BaseModel):
     product: str

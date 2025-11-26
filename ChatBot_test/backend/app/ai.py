@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = Groq(api_key="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")
+client = Groq(api_key=os.getenv("OPENAI_API_KEY"))
 
 def ask_ai(question, context=""):
     prompt = f"""
@@ -43,4 +43,4 @@ Answer:
 
     return response.choices[0].message.content
 
-#print(ask_ai("Hello", ""))
+print(ask_ai("Hello", ""))
